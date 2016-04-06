@@ -43,6 +43,10 @@ var sharepoint = require('sharepointer')({
   federatedAuthUrl : 'http://mysamlloginservice.com', // only set for auth type 'onlinesaml', the URL of the SAML service which issues assertions to forward to the SharePoint login URL
   rtFa: <token>,// an optional parameter to set rtFa token value,
   FedAuth:<token> // an optional parameter to set FedAuth token value,  
+  fieldValuesAsText : true, //Return Lookup Field Values as Text for Items
+  filterFields : ["{\"field\": \"field1\", \"value\": \"value1\"}"], //Filter Items in List based on field value(s) $filter=
+  selectFields : ['field1', 'field2'], //Only return List or Item data for fields specified $select=
+  expandFields : ['field1', 'field2'] //"JOIN" another list based on a lookup value and return data $expand=
 });
 ```
 
@@ -68,7 +72,8 @@ Skip this if you already know enough about SharePoint.<br>Here's the basics I wa
 
 # Methods
 ## Lists
-As mentioned above, SharePoint is driven by lists. The base SharePoint API allows you to `CRUDL` lists, but the read operation doesn't return Items[] or Fields[] - this is a separate API operation. With Sharepointer, list read operations also retrieve all Fields[] and Items[] on the list for convenience.  
+As mentioned above, SharePoint is driven by lists. The base SharePoint API allows you to `CRUDL` lists, but the read operation doesn't return Items[] or Fields[] - this is a separate API operation.
+With Sharepointer, list read operations also retrieve all Fields[] and Items[] on the list for convenience.  
 
 ### Lists List
 Confusing, I know. Bear with me. Lists all objects of type `list` in sharepoints (and remember, almost everything in Sharepoint is a list!).
@@ -92,8 +97,8 @@ sharepoint.lists.create({ title : 'My new list', description : 'Some list descri
 ```
 
 ### Lists Read
-List Read can take a string as the first param (assumes list Id), or a params object specifying either a guid or title.<br>The list operation already tells us quite a bit about that list, but this read call also returns Fields[] and Items[]. This is different to how the SharePoint API behaves, and is offered as a convenience.
-
+List Read can take a string as the first param (assumes list Id), or a params object specifying either a guid or title.  
+The list operation already tells us quite a bit about that list, but this read call also returns Fields[] and Items[]. This is different to how the SharePoint API behaves, and is offered as a convenience.
 ```javascript
 // Get a list by ID - you can find this under the 'Id' property.
 sharepoint.lists.read('list name', function(err, listReadResult){
@@ -234,9 +239,20 @@ sharepoint.lists.read('list Name', function(err, listReadResult){
 });
 ```
 
-### ListItem Delete
-To delete a ListItem, we can use the del() function.
+##ListItem Update
+To update a ListItem, we use the update() function.
+```javascript
+var listItemData {
+  itemId: ListItemID, //Value of the item's ID field
+  '__metadata': {
+    'type': 'SP.Data.MyListItem'}, //type is the item's type AKA ListItemEntityTypeFullName of the List to which the item belongs
+  'Title': 'Jim Wuz Here' //Item Field to update : Data to update the Field with
+}
+sharepoint.listItems.update('someListGUID', listItemData, function(res));
+```
 
+###ListItem Delete
+To delete a ListItem, we can use the del() function.
 ```javascript
 sharepoint.listItems.del('list Name', 'someListItemId', function(err){
 
