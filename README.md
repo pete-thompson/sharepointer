@@ -47,19 +47,10 @@ var sharepoint = require('sharepoint')({
   filterFields : ["{\"field\": \"field1\", \"value\": \"value1\"}"], //Filter Items in List based on field value(s) $filter=
   selectFields : ['field1', 'field2'], //Only return List or Item data for fields specified $select=
   expandFields : ['field1', 'field2'] //"JOIN" another list based on a lookup value and return data $expand=
-});
-```
-
-## Additional Parameters for listing and reading Lists and ListItems
-
-```javascript
-  fieldValuesAsText : true, //Return Lookup Field Values as Text for Items
-  filterFields : [{field: 'field1', value: 'value1'}], //Filter Items in List based on field value(s) $filter=
-  selectFields : ['field1', 'field2'], //Only return List or Item data for fields specified $select=
-  expandFields : ['field1', 'field2'], //"JOIN" another list based on a lookup value and return data $expand=
   orOperator:false, // set to true to enable 'or' operation   
   andOrOperator:false,// set to true to enable 'andor' operation
   $top: "1000" // set the required '$top' value (to change the response cap) and by default it is set to 5000
+});
 ```
 
 # A Sharepoint Primer
